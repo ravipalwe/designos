@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solvent — The Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* tokens — copied verbatim from 03-design-system.html */
+:root {
+  --color-background: #FAF7F2; --color-surface: #FFFFFF; --color-surface-sunken: #F8F6F3;
+  --color-text-primary: #1C1A17; --color-text-muted: #67625D; --color-text-on-accent: #FFFFFF;
+  --color-accent: #C24A2C; --color-accent-hover: #A7472E; --color-accent-subtle: #FFF2EF;
+  --color-accent-text-on-subtle: #89371F; --color-border: #E4DED2; --color-border-strong: #C7C3BE;
+  --color-focus-ring: #C24A2C; --color-danger: #AB4042; --color-danger-subtle: #FDEEED;
+  --color-danger-text: #8B3134; --color-success: #3C784B; --color-success-subtle: #E4F2E7;
+  --color-success-text: #2E5D3A; --color-warning: #846308; --color-warning-subtle: #F7EFDC;
+  --color-warning-text: #6B5006;
+  --font-display: "Fraunces", Georgia, serif; --font-body: "Figtree", system-ui, sans-serif;
+  --text-h1: 600 33px/1.15 var(--font-display); --text-h2: 600 28px/1.2 var(--font-display);
+  --text-h3: 600 19px/1.3 var(--font-body); --text-body: 400 16px/1.55 var(--font-body);
+  --text-small: 400 14px/1.45 var(--font-body); --text-caption: 500 12px/1.4 var(--font-body);
+  --text-label: 600 11px/1.3 var(--font-body);
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 20px;
+  --space-6: 24px; --space-8: 32px; --space-10: 40px; --space-12: 48px; --space-16: 64px; --space-24: 96px;
+  --radius-sm: 2px; --radius-md: 4px; --radius-full: 9999px;
+  --border-hairline: 1px solid var(--color-border);
+  --duration-fast: 120ms; --duration-base: 200ms; --duration-slow: 320ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); --ease-in: cubic-bezier(0.5, 0, 0.75, 0);
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: var(--color-background); color: var(--color-text-primary); font: var(--text-body); }
+:focus-visible { outline: 2px solid var(--color-focus-ring); outline-offset: 2px; }
+.label { font: var(--text-label); letter-spacing: 0.09em; text-transform: uppercase; color: var(--color-text-muted); }
+.amount { font-variant-numeric: tabular-nums; font-weight: 500; }
+
+header.site { border-bottom: var(--border-hairline); }
+.nav { max-width: 960px; margin: 0 auto; padding: 0 var(--space-6); height: 56px; display: flex; align-items: center; gap: var(--space-6); }
+.wordmark { font: 600 19px var(--font-display); text-decoration: none; color: var(--color-text-primary); }
+.nav a.item { font: var(--text-small); color: var(--color-text-muted); text-decoration: none; padding: var(--space-2) 0;
+  border-bottom: 2px solid transparent; transition: color var(--duration-fast) var(--ease-out); }
+.nav a.item:hover { color: var(--color-text-primary); }
+.nav a.item[aria-current="page"] { color: var(--color-text-primary); border-bottom-color: var(--color-accent); }
+.nav .spacer { flex: 1; }
+.btn { font: 600 14px var(--font-body); border: none; border-radius: var(--radius-md); height: 40px; padding: 0 18px; cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-out); }
+.btn-primary { background: var(--color-accent); color: var(--color-text-on-accent); }
+.btn-primary:hover { background: var(--color-accent-hover); }
+.btn-ghost { background: transparent; color: var(--color-text-muted); height: 36px; }
+.btn-ghost:hover { color: var(--color-text-primary); background: var(--color-surface-sunken); }
+
+main { max-width: 960px; margin: 0 auto; padding: var(--space-12) var(--space-6) var(--space-24); }
+h1 { font: var(--text-h1); letter-spacing: -0.01em; font-optical-sizing: auto; }
+.sub { font: var(--text-small); color: var(--color-text-muted); margin-top: var(--space-2); }
+
+/* toolbar */
+.toolbar { display: flex; gap: var(--space-4); align-items: center; margin-top: var(--space-8); flex-wrap: wrap; }
+.search { flex: 1; min-width: 220px; display: flex; align-items: center; }
+.search input { width: 100%; font: var(--text-small); background: transparent; border: none; height: 36px;
+  border-bottom: 1px solid var(--color-border-strong); transition: border-color var(--duration-fast) var(--ease-out); }
+.search input::placeholder { color: var(--color-text-muted); }
+.search input:focus { outline: none; border-bottom: 2px solid var(--color-accent); margin-bottom: -1px; }
+.chip { font: var(--text-caption); font-weight: 600; color: var(--color-text-muted); background: transparent;
+  border: 1px solid var(--color-border-strong); border-radius: var(--radius-full); padding: 6px 12px; cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out); }
+.chip:hover { color: var(--color-text-primary); border-color: var(--color-text-muted); }
+.chip[aria-pressed="true"] { background: var(--color-accent-subtle); color: var(--color-accent-text-on-subtle); border-color: var(--color-accent-text-on-subtle); }
+
+/* ledger table — compact: 40px rows, 14px type */
+.month { margin-top: var(--space-10); }
+.month > .label { display: block; padding-bottom: var(--space-2); }
+table { width: 100%; border-collapse: collapse; }
+thead th { font: var(--text-caption); color: var(--color-text-muted); font-weight: 600; text-align: left;
+  border-bottom: 1px solid var(--color-border-strong); padding: var(--space-2) var(--space-2); }
+thead th.num { text-align: right; }
+tbody td { font: var(--text-small); border-bottom: var(--border-hairline); padding: 0 var(--space-2); height: 40px; }
+tbody tr { transition: background var(--duration-fast) var(--ease-out); }
+tbody tr:hover { background: var(--color-surface-sunken); }
+td.who { max-width: 340px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+td.cat { color: var(--color-text-muted); font: var(--text-caption); }
+td.num { text-align: right; }
+.badge { display: inline-block; font: var(--text-caption); font-weight: 600; border-radius: var(--radius-sm); padding: 1px 8px; margin-left: var(--space-2); }
+.badge.warn { background: var(--color-warning-subtle); color: var(--color-warning-text); }
+.badge.bad { background: var(--color-danger-subtle); color: var(--color-danger-text); }
+.rowlink { font: var(--text-caption); font-weight: 600; color: var(--color-accent-text-on-subtle); background: none; border: none; cursor: pointer; padding: 2px 4px; }
+.count { font: var(--text-caption); color: var(--color-text-muted); margin-top: var(--space-6); display: flex; justify-content: space-between; }
+
+@media (max-width: 640px) {
+  td.cat, thead th.cat { display: none; }
+  td.who { max-width: 180px; }
+}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <nav class="nav" aria-label="Primary">
+    <a class="wordmark" href="#">Solvent</a>
+    <a class="item" href="#">Runway</a>
+    <a class="item" href="#" aria-current="page">Ledger</a>
+    <a class="item" href="#">Assumptions</a>
+    <span class="spacer"></span>
+    <button class="btn btn-ghost" type="button">Export CSV</button>
+    <button class="btn btn-primary" type="button">Add transaction</button>
+  </nav>
+</header>
+
+<main>
+  <h1>The ledger</h1>
+  <p class="sub amount">128 entries · May – Jul 2026 · balance $119,640.27</p>
+
+  <div class="toolbar">
+    <div class="search"><input type="search" placeholder="Search payees…" aria-label="Search payees"></div>
+    <button class="chip" type="button" aria-pressed="true">All</button>
+    <button class="chip" type="button" aria-pressed="false">Income</button>
+    <button class="chip" type="button" aria-pressed="false">Spending</button>
+    <button class="chip" type="button" aria-pressed="false">Estimates</button>
+  </div>
+
+  <section class="month" aria-label="July 2026">
+    <span class="label">July 2026</span>
+    <table>
+      <thead><tr><th>Payee</th><th class="cat">Category</th><th>Date</th><th class="num">Amount</th></tr></thead>
+      <tbody>
+        <tr><td class="who">Stripe payout</td><td class="cat">Income</td><td class="amount">Jul 1</td><td class="num amount">+$3,120.00</td></tr>
+        <tr><td class="who">Mercury — checking interest</td><td class="cat">Income</td><td class="amount">Jul 1</td><td class="num amount">+$41.87</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="month" aria-label="June 2026">
+    <span class="label">June 2026</span>
+    <table>
+      <thead><tr><th>Payee</th><th class="cat">Category</th><th>Date</th><th class="num">Amount</th></tr></thead>
+      <tbody>
+        <tr><td class="who">AWS</td><td class="cat">Infrastructure</td><td class="amount">Jun 30</td><td class="num amount">−$247.13</td></tr>
+        <tr><td class="who">Linear</td><td class="cat">Tools</td><td class="amount">Jun 30</td><td class="num amount">−$8.00</td></tr>
+        <tr><td class="who">Vercel<span class="badge bad">Failed sync</span><button class="rowlink" type="button">Retry</button></td><td class="cat">Infrastructure</td><td class="amount">Jun 29</td><td class="num amount">—</td></tr>
+        <tr><td class="who">Payroll — Konstantinos Papadopoulos-Wright (contract, June)</td><td class="cat">People</td><td class="amount">Jun 28</td><td class="num amount">−$4,200.00</td></tr>
+        <tr><td class="who">Office sublet<span class="badge warn">Estimate</span></td><td class="cat">Space</td><td class="amount">Jun 28</td><td class="num amount">−$650.00</td></tr>
+        <tr><td class="who">Google Workspace</td><td class="cat">Tools</td><td class="amount">Jun 27</td><td class="num amount">−$28.80</td></tr>
+        <tr><td class="who">Refund — duplicate charge</td><td class="cat">Adjustments</td><td class="amount">Jun 24</td><td class="num amount">+$36.99</td></tr>
+        <tr><td class="who">Ada Chen — design sprint</td><td class="cat">People</td><td class="amount">Jun 17</td><td class="num amount">−$1,800.00</td></tr>
+        <tr><td class="who">Hetzner</td><td class="cat">Infrastructure</td><td class="amount">Jun 12</td><td class="num amount">−$89.04</td></tr>
+        <tr><td class="who">Stripe payout</td><td class="cat">Income</td><td class="amount">Jun 3</td><td class="num amount">+$2,904.50</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="count">
+    <span>Showing 12 of 128 — scroll loads the rest</span>
+    <span class="amount">June net −$5,300.00</span>
+  </div>
+</main>
+
+<!-- DesignOS dev overlay: g = 8px grid, b = squint test -->
+<div id="dx" hidden></div>
+<style>
+  #dx { position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+    background:
+      repeating-linear-gradient(to bottom, transparent 0 7px, oklch(0.6 0.2 20 / 0.12) 7px 8px),
+      repeating-linear-gradient(to right, transparent 0 7px, oklch(0.6 0.2 20 / 0.08) 7px 8px); }
+  body.blur-test > *:not(#dx) { filter: blur(6px); }
+</style>
+<script>
+  addEventListener('keydown', e => {
+    if (e.target.matches('input,textarea,select')) return;
+    if (e.key === 'g') dx.hidden = !dx.hidden;
+    if (e.key === 'b') document.body.classList.toggle('blur-test');
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solvent — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* tokens — copied verbatim from 03-design-system.html */
+:root {
+  --color-background: #FAF7F2; --color-surface: #FFFFFF; --color-surface-sunken: #F8F6F3;
+  --color-text-primary: #1C1A17; --color-text-muted: #67625D; --color-text-on-accent: #FFFFFF;
+  --color-accent: #C24A2C; --color-accent-hover: #A7472E; --color-accent-subtle: #FFF2EF;
+  --color-accent-text-on-subtle: #89371F; --color-border: #E4DED2; --color-border-strong: #C7C3BE;
+  --color-focus-ring: #C24A2C; --color-danger: #AB4042; --color-danger-subtle: #FDEEED;
+  --color-danger-text: #8B3134; --color-success: #3C784B; --color-success-subtle: #E4F2E7;
+  --color-success-text: #2E5D3A; --color-warning: #846308; --color-warning-subtle: #F7EFDC;
+  --color-warning-text: #6B5006;
+  --font-display: "Fraunces", Georgia, serif; --font-body: "Figtree", system-ui, sans-serif;
+  --text-display: 600 clamp(40px, 26.9px + 1.64vw, 56px)/1.08 var(--font-display);
+  --text-h1: 600 33px/1.15 var(--font-display); --text-h2: 600 28px/1.2 var(--font-display);
+  --text-h3: 600 19px/1.3 var(--font-body); --text-body: 400 16px/1.55 var(--font-body);
+  --text-small: 400 14px/1.45 var(--font-body); --text-caption: 500 12px/1.4 var(--font-body);
+  --text-label: 600 11px/1.3 var(--font-body);
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 20px;
+  --space-6: 24px; --space-8: 32px; --space-10: 40px; --space-12: 48px; --space-16: 64px; --space-24: 96px;
+  --radius-sm: 2px; --radius-md: 4px; --radius-full: 9999px;
+  --border-hairline: 1px solid var(--color-border);
+  --shadow-modal: 0 2px 4px oklch(0.2 0.02 78 / 0.05), 0 12px 32px oklch(0.2 0.02 78 / 0.10);
+  --duration-fast: 120ms; --duration-base: 200ms; --duration-slow: 320ms; --duration-page: 450ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-in: cubic-bezier(0.5, 0, 0.75, 0);
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: var(--color-background); color: var(--color-text-primary); font: var(--text-body); }
+:focus-visible { outline: 2px solid var(--color-focus-ring); outline-offset: 2px; }
+.label { font: var(--text-label); letter-spacing: 0.09em; text-transform: uppercase; color: var(--color-text-muted); }
+.amount { font-variant-numeric: tabular-nums; font-weight: 500; }
+
+/* nav */
+header { border-bottom: var(--border-hairline); background: var(--color-background); }
+.nav { max-width: 960px; margin: 0 auto; padding: 0 var(--space-6); height: 56px; display: flex; align-items: center; gap: var(--space-6); }
+.wordmark { font: 600 19px var(--font-display); text-decoration: none; color: var(--color-text-primary); }
+.nav a.item { font: var(--text-small); color: var(--color-text-muted); text-decoration: none; padding: var(--space-2) 0;
+  border-bottom: 2px solid transparent; transition: color var(--duration-fast) var(--ease-out); }
+.nav a.item:hover { color: var(--color-text-primary); }
+.nav a.item[aria-current="page"] { color: var(--color-text-primary); border-bottom-color: var(--color-accent); }
+.nav .spacer { flex: 1; }
+
+/* buttons */
+.btn { font: 600 14px var(--font-body); border: none; border-radius: var(--radius-md); height: 40px; padding: 0 18px; cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out); }
+.btn-primary { background: var(--color-accent); color: var(--color-text-on-accent); }
+.btn-primary:hover { background: var(--color-accent-hover); }
+.btn-primary:active { transform: translateY(1px); }
+.btn-ghost { background: transparent; color: var(--color-text-muted); height: 36px; }
+.btn-ghost:hover { color: var(--color-text-primary); background: var(--color-surface-sunken); }
+
+main { max-width: 960px; margin: 0 auto; padding: var(--space-12) var(--space-6) var(--space-24); }
+
+/* hero */
+.hero { display: grid; grid-template-columns: 1fr auto; gap: var(--space-8); align-items: end; }
+.runway .display { font: var(--text-display); letter-spacing: -0.015em; font-optical-sizing: auto; margin-top: var(--space-2); }
+.runway .display .unit { font-size: 0.42em; letter-spacing: 0; color: var(--color-text-muted); font-weight: 600; margin-left: var(--space-1); }
+.runway .sub { font: var(--text-small); color: var(--color-text-muted); margin-top: var(--space-2); }
+.spark { width: 220px; }
+.spark svg { display: block; width: 100%; height: auto; }
+.spark .cap { font: var(--text-caption); color: var(--color-text-muted); margin-top: var(--space-1); text-align: right; }
+
+/* stat columns on ledger lines */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-8); margin-top: var(--space-10); }
+.stat { border-top: var(--border-hairline); padding-top: var(--space-3); }
+.stat .val { font: 600 23px/1.3 var(--font-body); margin-top: var(--space-1); }
+.stat .delta { font: var(--text-caption); color: var(--color-text-muted); margin-top: 2px; }
+
+/* recent entries */
+.section-head { display: flex; align-items: baseline; justify-content: space-between; margin: var(--space-16) 0 var(--space-3); }
+.section-head h2 { font: var(--text-h2); letter-spacing: -0.005em; font-optical-sizing: auto; }
+.section-head a { font: var(--text-small); color: var(--color-accent-text-on-subtle); }
+.ledger-row { display: flex; justify-content: space-between; align-items: center; gap: var(--space-3);
+  height: 44px; border-bottom: var(--border-hairline); font: var(--text-small);
+  transition: background var(--duration-fast) var(--ease-out); }
+.ledger-row:first-of-type { border-top: var(--border-hairline); }
+.ledger-row:hover { background: var(--color-surface-sunken); }
+.ledger-row .who { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ledger-row .when { color: var(--color-text-muted); font: var(--text-caption); margin-left: var(--space-2); }
+.badge { display: inline-block; font: var(--text-caption); font-weight: 600; border-radius: var(--radius-sm); padding: 1px 8px; margin-left: var(--space-2); }
+.badge.warn { background: var(--color-warning-subtle); color: var(--color-warning-text); }
+
+/* empty state */
+.state-divider { margin: var(--space-24) 0 var(--space-8); text-align: center; }
+.state-divider span { font: var(--text-label); letter-spacing: 0.09em; text-transform: uppercase; color: var(--color-text-muted);
+  background: var(--color-background); padding: 0 var(--space-4); position: relative; top: -0.7em; }
+.state-divider { border-top: 2px dashed var(--color-border-strong); }
+.empty { text-align: center; padding: var(--space-16) var(--space-6); }
+.empty .rules { width: 96px; margin: 0 auto var(--space-5); }
+.empty .rules div { border-bottom: 1px solid var(--color-border-strong); height: 12px; }
+.empty .rules div:last-child { width: 60%; }
+.empty h1 { font: var(--text-h1); letter-spacing: -0.01em; font-optical-sizing: auto; margin-bottom: var(--space-2); }
+.empty p { font: var(--text-body); color: var(--color-text-muted); margin-bottom: var(--space-6); }
+.empty .actions { display: flex; gap: var(--space-3); justify-content: center; }
+.btn-secondary { background: var(--color-surface); color: var(--color-text-primary); border: 1px solid var(--color-border-strong); }
+.btn-secondary:hover { border-color: var(--color-text-muted); }
+
+@media (max-width: 640px) {
+  .hero { grid-template-columns: 1fr; }
+  .spark { width: 100%; }
+  .spark .cap { text-align: left; }
+  .stats { grid-template-columns: 1fr; gap: var(--space-4); }
+  .nav { gap: var(--space-4); }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="nav" aria-label="Primary">
+    <a class="wordmark" href="#">Solvent</a>
+    <a class="item" href="#" aria-current="page">Runway</a>
+    <a class="item" href="#">Ledger</a>
+    <a class="item" href="#">Assumptions</a>
+    <span class="spacer"></span>
+    <button class="btn btn-ghost" type="button">Export CSV</button>
+    <button class="btn btn-primary" type="button">Add transaction</button>
+  </nav>
+</header>
+
+<main>
+  <!-- STATE: DEFAULT -->
+  <section class="hero" aria-label="Runway summary">
+    <div class="runway">
+      <span class="label">Months of runway</span>
+      <div class="display amount">14.2<span class="unit">months</span></div>
+      <p class="sub">Solvent until Sep 2027 — recomputed 4 minutes ago</p>
+    </div>
+    <div class="spark" aria-label="Balance, last 6 months, gently declining">
+      <svg viewBox="0 0 220 64" role="img">
+        <line x1="0" y1="16" x2="220" y2="16" stroke="#E4DED2" stroke-width="1"/>
+        <line x1="0" y1="40" x2="220" y2="40" stroke="#E4DED2" stroke-width="1"/>
+        <line x1="0" y1="63.5" x2="220" y2="63.5" stroke="#C7C3BE" stroke-width="1"/>
+        <polyline points="0,20 44,24 88,22 132,30 176,34 220,38" fill="none" stroke="#1C1A17" stroke-width="1.5"/>
+        <circle cx="220" cy="38" r="2.5" fill="#1C1A17"/>
+      </svg>
+      <div class="cap amount">Balance $119,640.27</div>
+    </div>
+  </section>
+
+  <section class="stats" aria-label="This month">
+    <div class="stat"><span class="label">Burn · June</span><div class="val amount">−$8,420.00</div><div class="delta amount">3-mo avg −$8,113.71</div></div>
+    <div class="stat"><span class="label">Income · June</span><div class="val amount">+$3,120.00</div><div class="delta">Stripe, 1 payout</div></div>
+    <div class="stat"><span class="label">Net · June</span><div class="val amount">−$5,300.00</div><div class="delta amount">May was −$4,918.42</div></div>
+  </section>
+
+  <section aria-label="Recent entries">
+    <div class="section-head">
+      <h2>Recent entries</h2>
+      <a href="#">Open the ledger →</a>
+    </div>
+    <div class="ledger-row"><span class="who">Stripe payout<span class="when">Jul 1</span></span><span class="amount">+$3,120.00</span></div>
+    <div class="ledger-row"><span class="who">AWS<span class="when">Jun 30</span></span><span class="amount">−$247.13</span></div>
+    <div class="ledger-row"><span class="who">Linear<span class="when">Jun 30</span></span><span class="amount">−$8.00</span></div>
+    <div class="ledger-row"><span class="who">Payroll — Konstantinos Papadopoulos-Wright<span class="when">Jun 28</span></span><span class="amount">−$4,200.00</span></div>
+    <div class="ledger-row"><span class="who">Office sublet<span class="badge warn">Estimate</span><span class="when">Jun 28</span></span><span class="amount">−$650.00</span></div>
+    <div class="ledger-row"><span class="who">Google Workspace<span class="when">Jun 27</span></span><span class="amount">−$28.80</span></div>
+    <div class="ledger-row"><span class="who">Refund — duplicate charge<span class="when">Jun 24</span></span><span class="amount">+$36.99</span></div>
+  </section>
+
+  <!-- STATE: EMPTY (FIRST-RUN) -->
+  <div class="state-divider" role="separator" aria-label="Mockup state divider"><span>State · Empty (first-run)</span></div>
+  <section class="empty" aria-label="Empty state">
+    <div class="rules" aria-hidden="true"><div></div><div></div><div></div></div>
+    <h1>Your ledger is empty</h1>
+    <p>Add your first transaction or connect Stripe,<br>and Solvent starts counting your months.</p>
+    <div class="actions">
+      <button class="btn btn-primary" type="button">Add first transaction</button>
+      <button class="btn btn-secondary" type="button">Connect Stripe</button>
+    </div>
+  </section>
+</main>
+
+<!-- DesignOS dev overlay: g = 8px grid, b = squint test -->
+<div id="dx" hidden></div>
+<style>
+  #dx { position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+    background:
+      repeating-linear-gradient(to bottom, transparent 0 7px, oklch(0.6 0.2 20 / 0.12) 7px 8px),
+      repeating-linear-gradient(to right, transparent 0 7px, oklch(0.6 0.2 20 / 0.08) 7px 8px); }
+  body.blur-test > *:not(#dx) { filter: blur(6px); }
+</style>
+<script>
+  addEventListener('keydown', e => {
+    if (e.target.matches('input,textarea,select')) return;
+    if (e.key === 'g') dx.hidden = !dx.hidden;
+    if (e.key === 'b') document.body.classList.toggle('blur-test');
+  });
+</script>
+</body>
+</html>

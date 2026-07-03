@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solvent — Your Assumptions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* tokens — copied verbatim from 03-design-system.html */
+:root {
+  --color-background: #FAF7F2; --color-surface: #FFFFFF; --color-surface-sunken: #F8F6F3;
+  --color-text-primary: #1C1A17; --color-text-muted: #67625D; --color-text-on-accent: #FFFFFF;
+  --color-accent: #C24A2C; --color-accent-hover: #A7472E; --color-accent-subtle: #FFF2EF;
+  --color-accent-text-on-subtle: #89371F; --color-border: #E4DED2; --color-border-strong: #C7C3BE;
+  --color-focus-ring: #C24A2C; --color-danger: #AB4042; --color-danger-subtle: #FDEEED;
+  --color-danger-text: #8B3134; --color-success: #3C784B; --color-success-subtle: #E4F2E7;
+  --color-success-text: #2E5D3A; --color-warning: #846308; --color-warning-subtle: #F7EFDC;
+  --color-warning-text: #6B5006;
+  --font-display: "Fraunces", Georgia, serif; --font-body: "Figtree", system-ui, sans-serif;
+  --text-display: 600 clamp(40px, 26.9px + 1.64vw, 56px)/1.08 var(--font-display);
+  --text-h1: 600 33px/1.15 var(--font-display); --text-h3: 600 19px/1.3 var(--font-body);
+  --text-body: 400 16px/1.55 var(--font-body); --text-small: 400 14px/1.45 var(--font-body);
+  --text-caption: 500 12px/1.4 var(--font-body); --text-label: 600 11px/1.3 var(--font-body);
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 20px;
+  --space-6: 24px; --space-8: 32px; --space-10: 40px; --space-12: 48px; --space-16: 64px; --space-24: 96px;
+  --radius-sm: 2px; --radius-md: 4px;
+  --border-hairline: 1px solid var(--color-border);
+  --duration-fast: 120ms; --duration-base: 200ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: var(--color-background); color: var(--color-text-primary); font: var(--text-body); }
+:focus-visible { outline: 2px solid var(--color-focus-ring); outline-offset: 2px; }
+.label { font: var(--text-label); letter-spacing: 0.09em; text-transform: uppercase; color: var(--color-text-muted); }
+.amount { font-variant-numeric: tabular-nums; font-weight: 500; }
+
+header.site { border-bottom: var(--border-hairline); }
+.nav { max-width: 960px; margin: 0 auto; padding: 0 var(--space-6); height: 56px; display: flex; align-items: center; gap: var(--space-6); }
+.wordmark { font: 600 19px var(--font-display); text-decoration: none; color: var(--color-text-primary); }
+.nav a.item { font: var(--text-small); color: var(--color-text-muted); text-decoration: none; padding: var(--space-2) 0;
+  border-bottom: 2px solid transparent; transition: color var(--duration-fast) var(--ease-out); }
+.nav a.item:hover { color: var(--color-text-primary); }
+.nav a.item[aria-current="page"] { color: var(--color-text-primary); border-bottom-color: var(--color-accent); }
+.nav .spacer { flex: 1; }
+.btn { font: 600 14px var(--font-body); border: none; border-radius: var(--radius-md); height: 40px; padding: 0 18px; cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-out); }
+.btn-primary { background: var(--color-accent); color: var(--color-text-on-accent); }
+.btn-primary:hover { background: var(--color-accent-hover); }
+.btn-ghost { background: transparent; color: var(--color-text-muted); height: 36px; }
+.btn-ghost:hover { color: var(--color-text-primary); background: var(--color-surface-sunken); }
+
+main { max-width: 960px; margin: 0 auto; padding: var(--space-12) var(--space-6) var(--space-24); }
+h1 { font: var(--text-h1); letter-spacing: -0.01em; font-optical-sizing: auto; }
+.sub { font: var(--text-small); color: var(--color-text-muted); margin-top: var(--space-2); max-width: 52ch; }
+
+.layout { display: grid; grid-template-columns: minmax(0, 420px) 1fr; gap: var(--space-16); margin-top: var(--space-10); align-items: start; }
+form { display: flex; flex-direction: column; gap: var(--space-8); }
+.field { display: flex; flex-direction: column; gap: var(--space-1); }
+.field label { font: var(--text-caption); font-weight: 600; }
+.field .hint { font: var(--text-caption); color: var(--color-text-muted); }
+.field input { font: var(--text-body); background: transparent; border: none; height: 40px;
+  border-bottom: 1px solid var(--color-border-strong); transition: border-color var(--duration-fast) var(--ease-out); }
+.field input:focus { outline: none; border-bottom: 2px solid var(--color-accent); margin-bottom: -1px; }
+.field.error input { border-bottom: 2px solid var(--color-danger); margin-bottom: -1px; }
+.field .msg { font: var(--text-caption); color: var(--color-danger-text); display: none; }
+.field.error .msg { display: block; }
+.field .msg::before { content: "⚠ "; }
+.observed { font: var(--text-caption); color: var(--color-text-muted); }
+.observed button { font: var(--text-caption); font-weight: 600; color: var(--color-accent-text-on-subtle); background: none; border: none; cursor: pointer; padding: 0; }
+
+/* preview rail */
+.preview { position: sticky; top: var(--space-6); background: var(--color-surface); border: var(--border-hairline);
+  border-radius: var(--radius-md); padding: var(--space-6); }
+.preview .display { font: var(--text-display); letter-spacing: -0.015em; font-optical-sizing: auto; margin-top: var(--space-2);
+  transition: color var(--duration-base) var(--ease-out); }
+.preview .display .unit { font-size: 0.42em; color: var(--color-text-muted); font-weight: 600; margin-left: var(--space-1); }
+.preview .until { font: var(--text-small); color: var(--color-text-muted); margin-top: var(--space-2); }
+.preview .rulebook { margin-top: var(--space-5); border-top: var(--border-hairline); }
+.preview .line { display: flex; justify-content: space-between; font: var(--text-small); height: 36px; align-items: center; border-bottom: var(--border-hairline); }
+.preview .line span:first-child { color: var(--color-text-muted); }
+
+/* unsaved bar */
+.unsaved { position: fixed; left: 0; right: 0; bottom: 0; background: var(--color-text-primary); color: var(--color-background);
+  transform: translateY(100%); transition: transform var(--duration-base) var(--ease-out); }
+.unsaved.show { transform: translateY(0); }
+.unsaved .inner { max-width: 960px; margin: 0 auto; padding: var(--space-3) var(--space-6); display: flex; align-items: center; gap: var(--space-4); }
+.unsaved .inner span { font: var(--text-small); flex: 1; }
+.unsaved .btn-primary { height: 36px; }
+.unsaved .btn-ghost { color: var(--color-border); }
+.unsaved .btn-ghost:hover { color: var(--color-background); background: transparent; }
+
+@media (max-width: 640px) {
+  .layout { grid-template-columns: 1fr; gap: var(--space-8); }
+  .preview { position: static; }
+}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <nav class="nav" aria-label="Primary">
+    <a class="wordmark" href="#">Solvent</a>
+    <a class="item" href="#">Runway</a>
+    <a class="item" href="#">Ledger</a>
+    <a class="item" href="#" aria-current="page">Assumptions</a>
+    <span class="spacer"></span>
+    <button class="btn btn-primary" type="button">Add transaction</button>
+  </nav>
+</header>
+
+<main>
+  <h1>Your assumptions</h1>
+  <p class="sub">Solvent observes your ledger; override anything it got wrong. The preview recomputes as you type — nothing is saved until you say so.</p>
+
+  <div class="layout">
+    <form aria-label="Assumptions">
+      <div class="field">
+        <label for="cash">Cash on hand</label>
+        <input id="cash" class="amount" type="text" inputmode="decimal" value="119,640.27" data-live>
+        <span class="hint observed">Observed from Mercury · Jul 1</span>
+      </div>
+      <div class="field">
+        <label for="burn">Monthly burn</label>
+        <input id="burn" class="amount" type="text" inputmode="decimal" value="8,420.00" data-live>
+        <span class="hint observed">Observed 3-mo average −$8,113.71 · <button type="button">use observed</button></span>
+      </div>
+      <div class="field">
+        <label for="income">Expected monthly income</label>
+        <input id="income" class="amount" type="text" inputmode="decimal" value="3,120.00" data-live>
+        <span class="msg" id="income-msg">That doesn't parse as an amount — try 3200 or 3,200.00</span>
+        <span class="hint observed">Observed Stripe average +$3,012.25</span>
+      </div>
+      <div class="field">
+        <label for="oneoff">One-off costs ahead</label>
+        <input id="oneoff" class="amount" type="text" inputmode="decimal" value="0.00" data-live>
+        <span class="hint">Tax bill, hardware, legal — anything the average won't see coming</span>
+      </div>
+      <div style="display: flex; gap: var(--space-3);">
+        <button class="btn btn-primary" type="button" id="save">Save assumptions</button>
+        <button class="btn btn-ghost" type="button">Reset to observed</button>
+      </div>
+    </form>
+
+    <aside class="preview" aria-live="polite" aria-label="Runway preview">
+      <span class="label">Runway · preview</span>
+      <div class="display amount"><span id="months">14.2</span><span class="unit">months</span></div>
+      <p class="until" id="until">Solvent until Sep 2027</p>
+      <div class="rulebook">
+        <div class="line"><span>Net burn</span><span class="amount" id="net">−$5,300.00 /mo</span></div>
+        <div class="line"><span>Cash after one-offs</span><span class="amount" id="cashline">$119,640.27</span></div>
+        <div class="line"><span>Confidence</span><span>Estimate — June sublet unconfirmed</span></div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<div class="unsaved" id="unsaved" role="status">
+  <div class="inner">
+    <span>Unsaved changes — the runway preview reflects them.</span>
+    <button class="btn btn-ghost" type="button" id="discard">Discard</button>
+    <button class="btn btn-primary" type="button">Save assumptions</button>
+  </div>
+</div>
+
+<script>
+  // Live recompute — the mockup behaves like the product (principle: instant feedback loop)
+  const $ = id => document.getElementById(id);
+  const parse = el => {
+    const v = parseFloat(el.value.replace(/[$,\s]/g, ''));
+    const bad = isNaN(v);
+    el.closest('.field').classList.toggle('error', bad);
+    return bad ? null : v;
+  };
+  const fmt = n => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const initial = {};
+  document.querySelectorAll('[data-live]').forEach(el => { initial[el.id] = el.value; });
+  function recompute() {
+    const cash = parse($('cash')), burn = parse($('burn')),
+          income = parse($('income')), oneoff = parse($('oneoff'));
+    if ([cash, burn, income, oneoff].some(v => v === null)) return;
+    const net = burn - income;
+    const avail = cash - oneoff;
+    const months = net <= 0 ? Infinity : avail / net;
+    $('net').textContent = net <= 0 ? `+$${fmt(-net)} /mo` : `−$${fmt(net)} /mo`;
+    $('cashline').textContent = `$${fmt(avail)}`;
+    if (months === Infinity) {
+      $('months').textContent = '∞';
+      $('until').textContent = 'Default alive — income covers burn';
+    } else {
+      $('months').textContent = (Math.round(months * 10) / 10).toFixed(1);
+      const d = new Date(2026, 6, 1); d.setMonth(d.getMonth() + Math.floor(months));
+      $('until').textContent = `Solvent until ${d.toLocaleString('en-US', { month: 'short', year: 'numeric' })}`;
+    }
+    const dirty = Object.keys(initial).some(id => $(id).value !== initial[id]);
+    $('unsaved').classList.toggle('show', dirty);
+  }
+  document.querySelectorAll('[data-live]').forEach(el => el.addEventListener('input', recompute));
+  $('discard').addEventListener('click', () => {
+    Object.entries(initial).forEach(([id, v]) => { $(id).value = v; });
+    recompute();
+  });
+</script>
+
+<!-- DesignOS dev overlay: g = 8px grid, b = squint test -->
+<div id="dx" hidden></div>
+<style>
+  #dx { position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+    background:
+      repeating-linear-gradient(to bottom, transparent 0 7px, oklch(0.6 0.2 20 / 0.12) 7px 8px),
+      repeating-linear-gradient(to right, transparent 0 7px, oklch(0.6 0.2 20 / 0.08) 7px 8px); }
+  body.blur-test > *:not(#dx) { filter: blur(6px); }
+</style>
+<script>
+  addEventListener('keydown', e => {
+    if (e.target.matches('input,textarea,select')) return;
+    if (e.key === 'g') dx.hidden = !dx.hidden;
+    if (e.key === 'b') document.body.classList.toggle('blur-test');
+  });
+</script>
+</body>
+</html>

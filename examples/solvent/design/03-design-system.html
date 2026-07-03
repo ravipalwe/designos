@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solvent Design System — Paper Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS — the :root block screens copy verbatim ============ */
+:root {
+  /* color · semantic (light) */
+  --color-background: #FAF7F2;
+  --color-surface: #FFFFFF;
+  --color-surface-sunken: #F8F6F3;
+  --color-text-primary: #1C1A17;
+  --color-text-muted: #67625D;
+  --color-text-on-accent: #FFFFFF;
+  --color-accent: #C24A2C;
+  --color-accent-hover: #A7472E;
+  --color-accent-subtle: #FFF2EF;
+  --color-accent-text-on-subtle: #89371F;
+  --color-border: #E4DED2;
+  --color-border-strong: #C7C3BE;
+  --color-focus-ring: #C24A2C;
+  --color-danger: #AB4042;
+  --color-danger-subtle: #FDEEED;
+  --color-danger-text: #8B3134;
+  --color-success: #3C784B;
+  --color-success-subtle: #E4F2E7;
+  --color-success-text: #2E5D3A;
+  --color-warning: #846308;
+  --color-warning-subtle: #F7EFDC;
+  --color-warning-text: #6B5006;
+  /* type */
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Figtree", system-ui, sans-serif;
+  --text-display: 600 clamp(40px, 26.9px + 1.64vw, 56px)/1.08 var(--font-display);
+  --text-h1: 600 33px/1.15 var(--font-display);
+  --text-h2: 600 28px/1.2 var(--font-display);
+  --text-h3: 600 19px/1.3 var(--font-body);
+  --text-body: 400 16px/1.55 var(--font-body);
+  --text-small: 400 14px/1.45 var(--font-body);
+  --text-caption: 500 12px/1.4 var(--font-body);
+  --text-label: 600 11px/1.3 var(--font-body);
+  /* space */
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+  --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-10: 40px;
+  --space-12: 48px; --space-16: 64px; --space-24: 96px;
+  /* radius */
+  --radius-sm: 2px; --radius-md: 4px; --radius-full: 9999px;
+  /* depth — hairline world */
+  --border-hairline: 1px solid var(--color-border);
+  --shadow-modal: 0 2px 4px oklch(0.2 0.02 78 / 0.05), 0 12px 32px oklch(0.2 0.02 78 / 0.10);
+  /* motion */
+  --duration-fast: 120ms; --duration-base: 200ms; --duration-slow: 320ms; --duration-page: 450ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-in: cubic-bezier(0.5, 0, 0.75, 0);
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+/* ============ base ============ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: var(--color-background); color: var(--color-text-primary); font: var(--text-body); }
+main { max-width: 960px; margin: 0 auto; padding: var(--space-16) var(--space-6) var(--space-24); }
+h1 { font: var(--text-h1); letter-spacing: -0.01em; text-wrap: balance; font-optical-sizing: auto; }
+h2 { font: var(--text-h2); letter-spacing: -0.005em; margin-top: var(--space-16); padding-top: var(--space-6);
+     border-top: var(--border-hairline); font-optical-sizing: auto; }
+h3 { font: var(--text-h3); margin-top: var(--space-8); }
+p.lede { font: var(--text-body); color: var(--color-text-muted); margin-top: var(--space-3); max-width: 65ch; }
+.label { font: var(--text-label); letter-spacing: 0.09em; text-transform: uppercase; color: var(--color-text-muted); }
+.amount { font-variant-numeric: tabular-nums; font-weight: 500; }
+section > .grid { margin-top: var(--space-6); }
+:focus-visible { outline: 2px solid var(--color-focus-ring); outline-offset: 2px; }
+
+/* ============ swatches ============ */
+.swgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--space-3); }
+.swatch { background: var(--color-surface); border: var(--border-hairline); border-radius: var(--radius-md); overflow: hidden; }
+.swatch .chip { height: 56px; }
+.swatch .meta { padding: var(--space-2) var(--space-3) var(--space-3); font: var(--text-caption); }
+.swatch .meta b { display: block; font-weight: 600; }
+.swatch .meta span { color: var(--color-text-muted); }
+
+/* ============ type specimens ============ */
+.type-row { display: flex; align-items: baseline; gap: var(--space-6); padding: var(--space-4) 0; border-bottom: var(--border-hairline); }
+.type-row .label { width: 120px; flex-shrink: 0; }
+.type-row .spec { margin-left: auto; font: var(--text-caption); color: var(--color-text-muted); white-space: nowrap; }
+
+/* ============ space & radius ============ */
+.bar { background: var(--color-accent-subtle); border: 1px solid var(--color-accent); height: 20px; border-radius: var(--radius-sm); }
+.space-row { display: flex; align-items: center; gap: var(--space-4); padding: var(--space-1) 0; font: var(--text-caption); color: var(--color-text-muted); }
+.space-row .label { width: 120px; }
+
+/* ============ components ============ */
+.specimen { background: var(--color-surface); border: var(--border-hairline); border-radius: var(--radius-md);
+            padding: var(--space-6); margin-top: var(--space-4); }
+.specimen .label { display: block; margin-bottom: var(--space-4); }
+.row-flex { display: flex; gap: var(--space-3); flex-wrap: wrap; align-items: center; }
+
+.btn { font: 600 14px var(--font-body); border: none; border-radius: var(--radius-md); height: 40px; padding: 0 18px;
+       cursor: pointer; transition: background var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out); }
+.btn-primary { background: var(--color-accent); color: var(--color-text-on-accent); }
+.btn-primary:hover { background: var(--color-accent-hover); }
+.btn-primary:active { background: var(--color-accent-hover); transform: translateY(1px); }
+.btn-primary:focus-visible { outline-offset: -4px; outline-color: var(--color-text-on-accent); }
+.btn-secondary { background: var(--color-surface); color: var(--color-text-primary); border: 1px solid var(--color-border-strong); }
+.btn-secondary:hover { border-color: var(--color-text-muted); }
+.btn-ghost { background: transparent; color: var(--color-text-muted); height: 36px; }
+.btn-ghost:hover { color: var(--color-text-primary); background: var(--color-surface-sunken); }
+.btn-destructive { background: var(--color-danger); color: var(--color-text-on-accent); }
+.btn[disabled] { opacity: 0.4; cursor: not-allowed; }
+
+.field { display: flex; flex-direction: column; gap: var(--space-1); max-width: 320px; }
+.field label { font: var(--text-caption); font-weight: 600; }
+.field input { font: var(--text-body); background: var(--color-surface); border: none; height: 40px;
+               border-bottom: 1px solid var(--color-border-strong); transition: border-color var(--duration-fast) var(--ease-out); }
+.field input:focus { outline: none; border-bottom: 2px solid var(--color-accent); margin-bottom: -1px; }
+.field input:focus-visible { outline: none; }
+.field.error input { border-bottom: 2px solid var(--color-danger); margin-bottom: -1px; }
+.field .msg { font: var(--text-caption); color: var(--color-danger-text); }
+.field .msg::before { content: "⚠ "; }
+
+.badge { display: inline-block; font: var(--text-caption); font-weight: 600; border-radius: var(--radius-sm); padding: 2px 8px; }
+.badge.ok { background: var(--color-success-subtle); color: var(--color-success-text); }
+.badge.warn { background: var(--color-warning-subtle); color: var(--color-warning-text); }
+.badge.bad { background: var(--color-danger-subtle); color: var(--color-danger-text); }
+.badge.brand { background: var(--color-accent-subtle); color: var(--color-accent-text-on-subtle); }
+
+.ledger-row { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-3);
+              height: 44px; align-items: center; border-bottom: var(--border-hairline); font: var(--text-small); }
+.ledger-row .who { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ledger-row .when { color: var(--color-text-muted); font: var(--text-caption); margin-left: var(--space-2); }
+.ledger-row:hover { background: var(--color-surface-sunken); }
+
+.toast { display: inline-block; background: var(--color-text-primary); color: var(--color-background);
+         font: var(--text-small); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4); }
+
+.empty { text-align: center; padding: var(--space-12) var(--space-6); }
+.empty .rules { width: 96px; margin: 0 auto var(--space-5); }
+.empty .rules div { border-bottom: 1px solid var(--color-border-strong); height: 12px; }
+.empty .rules div:last-child { width: 60%; }
+.empty h3 { margin: 0 0 var(--space-2); }
+.empty p { font: var(--text-small); color: var(--color-text-muted); margin-bottom: var(--space-5); }
+
+.motion-card { background: var(--color-surface); border: var(--border-hairline); border-radius: var(--radius-md);
+               padding: var(--space-5); transition: transform var(--duration-base) var(--ease-out); }
+.motion-card:hover { transform: translateY(-2px); }
+footer { margin-top: var(--space-24); padding-top: var(--space-6); border-top: var(--border-hairline);
+         font: var(--text-caption); color: var(--color-text-muted); }
+</style>
+</head>
+<body>
+<main>
+  <p class="label">Solvent · Design System · Paper Ledger</p>
+  <h1 style="margin-top: var(--space-3)">Every number sits on ruled paper.</h1>
+  <p class="lede">Signature: ledger hairlines. Principles: the ledger is the interface · calm until money moves · every number can be trusted. This page is built entirely from the token block in its own source — it is the system's first implementation.</p>
+
+  <h2>Color</h2>
+  <p class="lede">Warm neutrals dyed with the ink's own hue (OKLCH 78°). Color is rationed by principle 2 — the grades below are computed, not estimated.</p>
+  <div class="grid swgrid" style="margin-top: var(--space-6)">
+    <div class="swatch"><div class="chip" style="background:#FAF7F2"></div><div class="meta"><b>background</b><span>#FAF7F2 · paper</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#FFFFFF"></div><div class="meta"><b>surface</b><span>#FFFFFF</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#F8F6F3"></div><div class="meta"><b>surface-sunken</b><span>#F8F6F3</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#1C1A17"></div><div class="meta"><b>text-primary</b><span>#1C1A17 · 16.3:1 AAA</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#67625D"></div><div class="meta"><b>text-muted</b><span>#67625D · 5.6:1 AA</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#C24A2C"></div><div class="meta"><b>accent</b><span>#C24A2C · label 4.9:1 AA</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#A7472E"></div><div class="meta"><b>accent-hover</b><span>#A7472E · label 5.9:1 AA</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#FFF2EF"></div><div class="meta"><b>accent-subtle</b><span>#FFF2EF · text 7.3:1 AAA</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#E4DED2"></div><div class="meta"><b>border</b><span>#E4DED2 · the hairline</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#C7C3BE"></div><div class="meta"><b>border-strong</b><span>#C7C3BE</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#3C784B"></div><div class="meta"><b>success</b><span>#3C784B · 4.9:1 AA</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#AB4042"></div><div class="meta"><b>danger</b><span>#AB4042 · 5.6:1 AA</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#846308"></div><div class="meta"><b>warning</b><span>#846308 · 5.2:1 AA</span></div></div>
+  </div>
+
+  <h2>Type</h2>
+  <p class="lede">Fraunces for anything that deserves gravity (≥19px); Figtree for chrome. Ratio 1.2. Amounts are a type token: tabular figures, always.</p>
+  <div style="margin-top: var(--space-4)">
+    <div class="type-row"><span class="label">display</span><span style="font: var(--text-display); letter-spacing:-0.015em; font-optical-sizing:auto;">14.2 months</span><span class="spec">Fraunces 600 · fluid 40→56 · 1.08</span></div>
+    <div class="type-row"><span class="label">h1</span><span style="font: var(--text-h1); letter-spacing:-0.01em;">Your runway</span><span class="spec">Fraunces 600 · 33 · 1.15</span></div>
+    <div class="type-row"><span class="label">h2</span><span style="font: var(--text-h2);">The ledger</span><span class="spec">Fraunces 600 · 28 · 1.2</span></div>
+    <div class="type-row"><span class="label">h3</span><span style="font: var(--text-h3);">June summary</span><span class="spec">Figtree 600 · 19 · 1.3</span></div>
+    <div class="type-row"><span class="label">body</span><span style="font: var(--text-body);">Connect an account or log transactions by hand.</span><span class="spec">Figtree 400 · 16 · 1.55</span></div>
+    <div class="type-row"><span class="label">small</span><span style="font: var(--text-small);">Recomputed 4 minutes ago</span><span class="spec">Figtree 400 · 14 · 1.45</span></div>
+    <div class="type-row"><span class="label">label</span><span class="label" style="width:auto">Months of runway</span><span class="spec">Figtree 600 · 11 · caps +0.09em</span></div>
+    <div class="type-row"><span class="label">amount</span><span class="amount" style="font-size:16px">−$4,200.00 · $12,847.50 · $0.00</span><span class="spec">tabular-nums · weight 500</span></div>
+  </div>
+
+  <h2>Space & radius</h2>
+  <p class="lede">Base 4. Ledger density lives at 12–24; regions breathe at 48–96. Radius stops at 4 — paper doesn't have rounded corners.</p>
+  <div style="margin-top: var(--space-6); max-width: 560px;">
+    <div class="space-row"><span class="label">space-2 · 8</span><div class="bar" style="width:8px"></div></div>
+    <div class="space-row"><span class="label">space-3 · 12</span><div class="bar" style="width:12px"></div></div>
+    <div class="space-row"><span class="label">space-4 · 16</span><div class="bar" style="width:16px"></div></div>
+    <div class="space-row"><span class="label">space-6 · 24</span><div class="bar" style="width:24px"></div></div>
+    <div class="space-row"><span class="label">space-8 · 32</span><div class="bar" style="width:32px"></div></div>
+    <div class="space-row"><span class="label">space-12 · 48</span><div class="bar" style="width:48px"></div></div>
+    <div class="space-row"><span class="label">space-24 · 96</span><div class="bar" style="width:96px"></div></div>
+  </div>
+
+  <h2>Components</h2>
+
+  <div class="specimen">
+    <span class="label">Buttons — hover, press, tab through them</span>
+    <div class="row-flex">
+      <button class="btn btn-primary" type="button">Add transaction</button>
+      <button class="btn btn-secondary" type="button">Connect Stripe</button>
+      <button class="btn btn-ghost" type="button">Export CSV</button>
+      <button class="btn btn-destructive" type="button">Delete account</button>
+      <button class="btn btn-primary" type="button" disabled>Add transaction</button>
+    </div>
+    <p style="font: var(--text-caption); color: var(--color-text-muted); margin-top: var(--space-3)">Destructive red appears only on destructive actions — principle 2.</p>
+  </div>
+
+  <div class="specimen">
+    <span class="label">Fields — underline fields are ledger lines (signature)</span>
+    <div class="row-flex" style="gap: var(--space-8); align-items: flex-start;">
+      <div class="field">
+        <label for="f1">Monthly burn</label>
+        <input id="f1" class="amount" type="text" value="8,420.00">
+      </div>
+      <div class="field error">
+        <label for="f2">Expected income</label>
+        <input id="f2" class="amount" type="text" value="3,2OO" aria-invalid="true" aria-describedby="f2msg">
+        <span class="msg" id="f2msg">That doesn't parse as an amount — try 3200 or 3,200.00</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="specimen">
+    <span class="label">Ledger rows — the product's most-seen surface</span>
+    <div class="ledger-row"><span class="who">Stripe payout<span class="when">Jul 1</span></span><span class="amount">+$3,120.00</span></div>
+    <div class="ledger-row"><span class="who">AWS<span class="when">Jun 30</span></span><span class="amount">−$247.13</span></div>
+    <div class="ledger-row"><span class="who">Payroll — Konstantinos Papadopoulos-Wright<span class="when">Jun 28</span></span><span class="amount">−$4,200.00</span></div>
+    <p style="font: var(--text-caption); color: var(--color-text-muted); margin-top: var(--space-3)">Negative amounts are ink, not red — a kept book, not an alarm panel.</p>
+  </div>
+
+  <div class="specimen">
+    <span class="label">Badges & toast</span>
+    <div class="row-flex">
+      <span class="badge ok">Reconciled</span>
+      <span class="badge warn">Estimate</span>
+      <span class="badge bad">Failed sync</span>
+      <span class="badge brand">Recurring</span>
+      <span class="toast">Transaction added — runway 14.1 mo</span>
+    </div>
+  </div>
+
+  <div class="specimen">
+    <span class="label">Empty state — first-run is a pitch</span>
+    <div class="empty">
+      <div class="rules" aria-hidden="true"><div></div><div></div><div></div></div>
+      <h3>Your ledger is empty</h3>
+      <p>Add your first transaction or connect Stripe,<br>and Solvent starts counting your months.</p>
+      <button class="btn btn-primary" type="button">Add first transaction</button>
+    </div>
+  </div>
+
+  <div class="specimen">
+    <span class="label">Motion — hover this card (fade-rise · 200ms · ease-out)</span>
+    <div class="motion-card" style="max-width: 320px;">
+      <span class="label">Runway</span>
+      <div style="font: var(--text-h2); font-optical-sizing: auto;" class="amount">14.2 months</div>
+      <span style="font: var(--text-caption); color: var(--color-text-muted)">Nothing bounces. Exits at 80% duration.</span>
+    </div>
+  </div>
+
+  <footer>
+    Solvent · Paper Ledger v1 · tokens verified with DesignOS color.py (14/14 pairs pass WCAG 2.1; APCA advisory ok) ·
+    dark mode out of scope v1 · source of truth: 03-design-system.md
+  </footer>
+</main>
+</body>
+</html>
