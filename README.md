@@ -10,6 +10,8 @@ Built for designers and founders who want designed products, not template output
 npx skills add ravipalwe/designos
 ```
 
+On the marketplace: [skills.sh/ravipalwe/designos](https://skills.sh/ravipalwe/designos)
+
 Works with any agent that reads `SKILL.md` — Claude Code, Cursor, Windsurf, Amp, Devin, and friends. Then just say:
 
 > run DesignOS on my app idea
