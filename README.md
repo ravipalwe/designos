@@ -68,11 +68,20 @@ skills/designos/
 
 Modes: fresh start · resume · revision (names downstream cost first) · redesign of an existing product · brand intake (builds around your existing brand) · fast mode ("just run it").
 
+## Example
+
+[`examples/solvent/`](examples/solvent/) — DesignOS run on a demo product (Solvent, a runway tracker for bootstrapped founders). Open [`design/02-direction.html`](examples/solvent/design/02-direction.html) to see the direction gate: three worlds rendered on the product's own dashboard, contrast grades printed in each footer.
+
 ## Requirements
 
 - File-system access (writes the `design/` directory)
 - `python3` for the color script (no packages needed)
 - Optional: Figma MCP for reading Figma references; browser tooling for visual self-verification
+
+## Security
+
+- `scripts/color.py` is pure stdlib — no network calls, no file writes, no dependencies to audit.
+- Like every agent skill, DesignOS runs with your agent's permissions. It's all readable markdown — read it before you run it.
 
 ## License
 
